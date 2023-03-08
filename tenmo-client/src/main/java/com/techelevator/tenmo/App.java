@@ -89,7 +89,7 @@ public class App {
     }
 
 	private void viewCurrentBalance() {
-
+        System.out.println("Your current balance is: $" + transferService.viewCurrentBalance(currentUser.getUser().getId()));
 		// TODO Auto-generated method stub
 		
 	}

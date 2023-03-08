@@ -29,6 +29,10 @@ public class AuthenticationService {
             ResponseEntity<AuthenticatedUser> response =
                     restTemplate.exchange(baseUrl + "login", HttpMethod.POST, entity, AuthenticatedUser.class);
             user = response.getBody();
+//            String token;
+//            if(user != null){
+//                token = user.getToken();
+//            }
         } catch (RestClientResponseException | ResourceAccessException e) {
             BasicLogger.log(e.getMessage());
         }
