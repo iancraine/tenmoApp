@@ -7,9 +7,9 @@ import java.util.List;
 
 public interface TransferDao {
 
-    Transfer sendMoney(Transfer sendTransfer);
+    void sendMoney(Transfer sendTransfer);
 
-    Transfer requestMoney(Transfer receiveTransfer);
+    void requestMoney(Transfer receiveTransfer);
 
     //View details of specific transfer by transfer id
     Transfer viewTransferById(int transferId);

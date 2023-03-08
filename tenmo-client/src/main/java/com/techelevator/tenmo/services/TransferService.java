@@ -1,14 +1,20 @@
 package com.techelevator.tenmo.services;
 
+import com.techelevator.tenmo.model.Transfer;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.client.RestTemplate;
 
 public class TransferService {
+
     public static final String API_BASE_URL = "http://localhost:8080/";
     private RestTemplate restTemplate = new RestTemplate();
 
     private String token = null;
 
     public void setToken(String token) {this.token = token;}
+
 
     /**
      * 1.) Get Balance Method
