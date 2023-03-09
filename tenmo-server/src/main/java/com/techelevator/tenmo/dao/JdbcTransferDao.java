@@ -52,16 +52,16 @@ public class JdbcTransferDao implements TransferDao{
 
     @Override
     public List<Transfer> viewTransfersByUser(int userId) {
-        List<Transfer> transfers = new ArrayList<>();
+        List<Transfer> transfers = null;
         String sql = "SELECT transfer_id, transfer_type_desc, transfer_status_desc, account_from, account_to, amount " +
                 "FROM transfer t " +
                 "JOIN transfer_type type ON type.transfer_type_id = t.transfer_type_id " +
                 "JOIN transfer_status status ON status.transfer_status_id = t.transfer_status_id " +
-                "JOIN account a ON a.account_id = account_to " +
+                "JOIN account a ON a.account_id = account_to OR a.account_id = account_from " +
                 "WHERE user_id = ?;";
         SqlRowSet row = jdbcTemplate.queryForRowSet(sql, userId);
         while(row.next()){
-            transfers.add(mapRowToTransfer(row));
+            transfers.add(mapRowToTransfer(row)) ;
         }
         return transfers;
     }

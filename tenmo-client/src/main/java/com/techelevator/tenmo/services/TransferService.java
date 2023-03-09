@@ -11,6 +11,9 @@ import org.springframework.web.client.RestClientResponseException;
 import org.springframework.web.client.RestTemplate;
 
 import java.math.BigDecimal;
+import java.sql.Array;
+import java.util.ArrayList;
+import java.util.List;
 
 public class TransferService {
 
@@ -32,6 +35,20 @@ public class TransferService {
         }
         return balance;
     }
+
+    public Transfer[] viewAllTransfers(int userId){
+        Transfer[] transfers = null;
+        try{
+            ResponseEntity<Transfer[]> response = restTemplate.exchange(API_BASE_URL+"transfers/"+userId,
+                    HttpMethod.GET, makeAuthEntity(), Transfer[].class);
+            transfers = response.getBody();
+
+        }catch (RestClientResponseException | ResourceAccessException e) {
+            BasicLogger.log(e.getMessage());
+        }
+        return transfers;
+    }
+
 
 
 

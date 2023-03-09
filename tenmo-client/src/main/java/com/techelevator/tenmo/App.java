@@ -1,6 +1,7 @@
 package com.techelevator.tenmo;
 
 import com.techelevator.tenmo.model.AuthenticatedUser;
+import com.techelevator.tenmo.model.Transfer;
 import com.techelevator.tenmo.model.UserCredentials;
 import com.techelevator.tenmo.services.AuthenticationService;
 import com.techelevator.tenmo.services.ConsoleService;
@@ -95,7 +96,23 @@ public class App {
 	}
 
 	private void viewTransferHistory() {
-		// TODO Auto-generated method stub
+        Transfer[] transfers = null;
+        transfers = transferService.viewAllTransfers(currentUser.getUser().getId());
+        System.out.println("-------------------------------------------");
+        System.out.println("Transfer");
+        System.out.printf("%-4s    %-20s    %-10s\n","ID", "From/To", "Amount");
+        System.out.println("-------------------------------------------");
+        for (Transfer transfer: transfers){
+            if(transfer.getTransferType().equalsIgnoreCase("Send")) {
+                System.out.printf("%-4s    %-20s    %10s\n", transfer.getTransferId(), "From: " + transfer.getAccountFrom(), "$ " + transfer.getAmount());
+            }else {
+                System.out.printf("%-4s    %-20s    %10s\n", transfer.getTransferId(), "To: " + transfer.getAccountTo(), "$ " + transfer.getAmount());
+
+            }
+        }
+        System.out.println("-------------------------------------------");
+
+        // TODO Auto-generated method stub
 		
 	}
 
