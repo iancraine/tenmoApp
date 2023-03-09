@@ -2,6 +2,8 @@ package com.techelevator.tenmo.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.math.BigDecimal;
+
 public class Transfer {
     @JsonProperty("transfer_id")
     private int transferId;
@@ -18,9 +20,18 @@ public class Transfer {
     @JsonProperty("account_to")
     private int accountTo;
 
-    private int amount;
+    private BigDecimal amount;
     //TODO: add account balance variable
 
+
+    public Transfer(String transferType, String status, int accountFrom, int accountTo, BigDecimal amount) {
+        this.transferType = transferType;
+        this.status = status;
+        this.accountFrom = accountFrom;
+        this.accountTo = accountTo;
+        this.amount = amount;
+    }
+    public Transfer(){}
 
     public int getTransferId() {
         return transferId;
@@ -62,11 +73,11 @@ public class Transfer {
         this.accountTo = accountTo;
     }
 
-    public int getAmount() {
+    public BigDecimal getAmount() {
         return amount;
     }
 
-    public void setAmount(int amount) {
+    public void setAmount(BigDecimal amount) {
         this.amount = amount;
     }
 }

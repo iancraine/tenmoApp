@@ -104,14 +104,16 @@ public class App {
         System.out.println("Transfer");
         System.out.printf("%-4s    %-20s    %-10s\n","ID", "From/To", "Amount");
         System.out.println("-------------------------------------------");
-        for (Transfer transfer: transfers){
-            if(transfer.getTransferType().equalsIgnoreCase("Send")) {
-                System.out.printf("%-4s    %-20s    %10s\n", transfer.getTransferId(), "From: " + transfer.getAccountFrom(), "$ " + transfer.getAmount());
-            }else {
-                System.out.printf("%-4s    %-20s    %10s\n", transfer.getTransferId(), "To: " + transfer.getAccountTo(), "$ " + transfer.getAmount());
+//        if(transfers.length > 0){
+            for (Transfer transfer: transfers){
+                if(transfer.getTransferType().equalsIgnoreCase("Send")) {
+                    System.out.printf("%-4s    %-20s    %10s\n", transfer.getTransferId(), "From: " + transfer.getAccountFrom(), "$ " + transfer.getAmount());
+                }else {
+                    System.out.printf("%-4s    %-20s    %10s\n", transfer.getTransferId(), "To: " + transfer.getAccountTo(), "$ " + transfer.getAmount());
 
+                }
             }
-        }
+//        }
         System.out.println("-------------------------------------------");
         int transferId = Integer.parseInt(consoleService.promptForString("Enter the transfer ID to view details (0 to cancel): "));
         if(transferId != 0){
@@ -135,11 +137,13 @@ public class App {
 
 	private void sendBucks() {
         consoleService.ListUsers(transferService.listUsers());
-//        int userId = consoleService.promptForInt("Enter ID of user you are " + requestOrSend + " to (0 to cancel): ");
-//        BigDecimal sendingAmount = null;
-//        if(userId !=0){
-//            sendingAmount = consoleService.promptForBigDecimal("Enter amount: ");
-//        }
+        int userId = consoleService.promptForInt("Enter ID of user you are send to (0 to cancel): ");
+        BigDecimal sendingAmount = null;
+        if(userId !=0){
+            sendingAmount = consoleService.promptForBigDecimal("Enter amount: ");
+        }
+        Transfer transfer = new Transfer("Send", "Pending", currentUser.getUser().getId(), userId, sendingAmount);
+        transferService.sendMoney(transfer);
 		// TODO Auto-generated method stub
 		
 	}
