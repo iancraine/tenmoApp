@@ -7,6 +7,8 @@ import com.techelevator.tenmo.services.AuthenticationService;
 import com.techelevator.tenmo.services.ConsoleService;
 import com.techelevator.tenmo.services.TransferService;
 
+import java.math.BigDecimal;
+
 public class App {
 
     private static final String API_BASE_URL = "http://localhost:8080/";
@@ -96,8 +98,7 @@ public class App {
 	}
 
 	private void viewTransferHistory() {
-        Transfer[] transfers = null;
-        transfers = transferService.viewAllTransfers(currentUser.getUser().getId());
+        Transfer[] transfers = transferService.viewAllTransfers(currentUser.getUser().getId());
         System.out.println("-------------------------------------------");
         System.out.println("Transfer");
         System.out.printf("%-4s    %-20s    %-10s\n","ID", "From/To", "Amount");
@@ -111,9 +112,19 @@ public class App {
             }
         }
         System.out.println("-------------------------------------------");
-
-        // TODO Auto-generated method stub
-		
+        int transferId = Integer.parseInt(consoleService.promptForString("Enter the transfer ID to view details (0 to cancel): "));
+        if(transferId != 0){
+            Transfer transfer = transferService.viewTransferById(transferId);
+            System.out.println("-------------------------------------------");
+            System.out.println("Transfer Details ");
+            System.out.println("-------------------------------------------");
+            System.out.println("Id: " + transfer.getTransferId());
+            System.out.println("From: " + transfer.getAccountFrom());
+            System.out.println("To: " + transfer.getAccountTo());
+            System.out.println("Type: " + transfer.getTransferType());
+            System.out.println("Status: " + transfer.getStatus());
+            System.out.println("Amount: " + transfer.getAmount());
+        }
 	}
 
 	private void viewPendingRequests() {
@@ -122,6 +133,12 @@ public class App {
 	}
 
 	private void sendBucks() {
+        consoleService.ListUsers(transferService.listUsers());
+//        int userId = consoleService.promptForInt("Enter ID of user you are " + requestOrSend + " to (0 to cancel): ");
+//        BigDecimal sendingAmount = null;
+//        if(userId !=0){
+//            sendingAmount = consoleService.promptForBigDecimal("Enter amount: ");
+//        }
 		// TODO Auto-generated method stub
 		
 	}

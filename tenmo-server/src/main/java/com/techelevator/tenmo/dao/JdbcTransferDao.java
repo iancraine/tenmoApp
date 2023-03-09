@@ -51,8 +51,8 @@ public class JdbcTransferDao implements TransferDao{
     }
 
     @Override
-    public List<Transfer> viewTransfersByUser(int userId) {
-        List<Transfer> transfers = null;
+    public Transfer[] viewTransfersByUser(int userId) {
+        List<Transfer> transfersList = new ArrayList<>();
         String sql = "SELECT transfer_id, transfer_type_desc, transfer_status_desc, account_from, account_to, amount " +
                 "FROM transfer t " +
                 "JOIN transfer_type type ON type.transfer_type_id = t.transfer_type_id " +
@@ -61,7 +61,11 @@ public class JdbcTransferDao implements TransferDao{
                 "WHERE user_id = ?;";
         SqlRowSet row = jdbcTemplate.queryForRowSet(sql, userId);
         while(row.next()){
-            transfers.add(mapRowToTransfer(row)) ;
+            transfersList.add(mapRowToTransfer(row)) ;
+        }
+        Transfer[] transfers = new Transfer[transfersList.size()];
+        for(int i = 0; i< transfersList.size(); i++){
+            transfers[i] = transfersList.get(i);
         }
         return transfers;
     }

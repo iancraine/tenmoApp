@@ -1,7 +1,9 @@
 package com.techelevator.tenmo.services;
 
 import com.techelevator.tenmo.model.Transfer;
+import com.techelevator.tenmo.model.User;
 import com.techelevator.util.BasicLogger;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -10,6 +12,7 @@ import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestClientResponseException;
 import org.springframework.web.client.RestTemplate;
 
+import java.lang.reflect.Type;
 import java.math.BigDecimal;
 import java.sql.Array;
 import java.util.ArrayList;
@@ -39,7 +42,7 @@ public class TransferService {
     public Transfer[] viewAllTransfers(int userId){
         Transfer[] transfers = null;
         try{
-            ResponseEntity<Transfer[]> response = restTemplate.exchange(API_BASE_URL+"transfers/"+userId,
+            ResponseEntity<Transfer[]> response = restTemplate.exchange(API_BASE_URL + "transfers/" + userId,
                     HttpMethod.GET, makeAuthEntity(), Transfer[].class);
             transfers = response.getBody();
 
@@ -47,6 +50,36 @@ public class TransferService {
             BasicLogger.log(e.getMessage());
         }
         return transfers;
+    }
+
+    public Transfer viewTransferById(int transferId) {
+        Transfer transfer = null;
+        try {
+            ResponseEntity<Transfer> response = restTemplate.exchange(API_BASE_URL + "transfer/" + transferId, HttpMethod.GET, makeAuthEntity(), Transfer.class);
+            transfer = response.getBody();
+        } catch (RestClientResponseException | ResourceAccessException e) {
+            BasicLogger.log(e.getMessage());
+        }
+        return transfer;
+    }
+
+    public void sendMoney(Transfer transfer){
+        try{
+            restTemplate.exchange(API_BASE_URL + "send", HttpMethod.POST, makeTransferEntity(transfer), Transfer.class);
+        }catch (RestClientResponseException | ResourceAccessException e) {
+            BasicLogger.log(e.getMessage());
+        }
+    }
+
+    public User[] listUsers(){
+        User[] users = null;
+        try{
+            ResponseEntity<User[]> response = restTemplate.exchange(API_BASE_URL + "users", HttpMethod.GET, makeAuthEntity(), User[].class);
+            users = response.getBody();
+        }catch (RestClientResponseException | ResourceAccessException e) {
+        BasicLogger.log(e.getMessage());
+        }
+        return users;
     }
 
 

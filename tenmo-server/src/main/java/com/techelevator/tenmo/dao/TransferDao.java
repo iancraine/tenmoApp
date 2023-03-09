@@ -15,7 +15,7 @@ public interface TransferDao {
     Transfer viewTransferById(int transferId);
 
     //View all transfers by specific account
-    List<Transfer> viewTransfersByUser(int userId);
+    Transfer[] viewTransfersByUser(int userId);
 
     List<Transfer> getPending(int userId);
 }

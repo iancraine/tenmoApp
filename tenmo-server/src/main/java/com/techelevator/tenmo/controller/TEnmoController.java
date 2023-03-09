@@ -43,9 +43,12 @@ public class TEnmoController {
     }
 
     @RequestMapping(path = "/transfers/{id}", method = RequestMethod.GET)
-    public List<Transfer> viewAllTransfers(@PathVariable int id){
+    public Transfer[] viewAllTransfers(@PathVariable int id){
         return transferDao.viewTransfersByUser(id);
     }
+
+    @RequestMapping(path = "/users", method = RequestMethod.GET)
+    public User[]
 
 
 

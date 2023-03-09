@@ -1,9 +1,12 @@
 package com.techelevator.tenmo.services;
 
 
+import com.techelevator.tenmo.model.Transfer;
+import com.techelevator.tenmo.model.User;
 import com.techelevator.tenmo.model.UserCredentials;
 
 import java.math.BigDecimal;
+import java.sql.SQLOutput;
 import java.util.Scanner;
 
 public class ConsoleService {
@@ -82,6 +85,23 @@ public class ConsoleService {
     public void pause() {
         System.out.println("\nPress Enter to continue...");
         scanner.nextLine();
+    }
+
+    public void ListUsers(User[] users){
+        System.out.println("-------------------------------------------");
+        System.out.println("Users");
+        System.out.printf("%-4s    %-10s\n", "ID", "Name");
+        System.out.println("-------------------------------------------");
+        for(User user : users){
+            System.out.printf("%-4s    %-10s\n", user.getId(), user.getUsername());
+        }
+        System.out.println("----------");
+    }
+
+    public void sendRequestStuff(Transfer transfer, String requestOrSend){
+
+
+
     }
 
     public void printErrorMessage() {
