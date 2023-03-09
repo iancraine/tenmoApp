@@ -37,10 +37,10 @@ public class TransferService {
     public Transfer[] viewAllTransfers(int userId){
         Transfer[] transfers = null;
         try{
-//            ResponseEntity<Transfer[]> response = restTemplate.exchange(API_BASE_URL + "transfers/" + userId,
-//                    HttpMethod.GET, makeAuthEntity(), Transfer[].class);
-//            transfers = response.getBody();
-            transfers = restTemplate.postForObject(API_BASE_URL + "transfers/" + userId, makeAuthEntity(), Transfer[].class);
+            ResponseEntity<Transfer[]> response = restTemplate.exchange(API_BASE_URL + "transfers/" + userId,
+                    HttpMethod.GET, makeAuthEntity(), Transfer[].class);
+            transfers = response.getBody();
+//            transfers = restTemplate.postForObject(API_BASE_URL + "transfers/" + userId, makeAuthEntity(), Transfer[].class);
 
 
 

@@ -49,8 +49,8 @@ public class TEnmoController {
         return accountDao.getBalance(id);
     }
 
-    @RequestMapping(path = "/transfers/{id}", method = RequestMethod.POST)
-    public Transfer[] viewAllTransfers(@Valid @PathVariable int id){
+    @RequestMapping(path = "/transfers/{id}", method = RequestMethod.GET)
+    public List<Transfer> viewAllTransfers(@Valid @PathVariable int id){
         return transferDao.viewTransfersByUser(id);
     }
 

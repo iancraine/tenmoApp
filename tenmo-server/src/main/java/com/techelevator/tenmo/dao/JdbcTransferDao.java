@@ -51,7 +51,7 @@ public class JdbcTransferDao implements TransferDao{
     }
 
     @Override
-    public Transfer[] viewTransfersByUser(int userId) {
+    public List<Transfer> viewTransfersByUser(int userId) {
         List<Transfer> transfersList = new ArrayList<>();
         String sql = "SELECT transfer_id, transfer_type_desc, transfer_status_desc, account_from, account_to, amount " +
                 "FROM transfer t " +
@@ -60,14 +60,12 @@ public class JdbcTransferDao implements TransferDao{
                 "JOIN account a ON a.account_id = account_to OR a.account_id = account_from " +
                 "WHERE user_id = ?;";
         SqlRowSet row = jdbcTemplate.queryForRowSet(sql, userId);
-        while(row.next()){
-            transfersList.add(mapRowToTransfer(row)) ;
+        while (row.next()){
+            Transfer transfer = mapRowToTransfer(row);
+            transfersList.add(transfer);
         }
-        Transfer[] transfers = new Transfer[transfersList.size()];
-        for(int i = 0; i< transfersList.size(); i++){
-            transfers[i] = transfersList.get(i);
-        }
-        return transfers;
+
+        return transfersList;
     }
 
     @Override
