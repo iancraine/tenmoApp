@@ -47,8 +47,8 @@ public class TEnmoController {
         return transferDao.viewTransfersByUser(id);
     }
 
-    @RequestMapping(path = "/users", method = RequestMethod.GET)
-    public User[]
+//    @RequestMapping(path = "/users", method = RequestMethod.GET)
+//    public User[]
 
 
 

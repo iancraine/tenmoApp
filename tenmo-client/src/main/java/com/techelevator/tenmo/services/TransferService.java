@@ -3,25 +3,20 @@ package com.techelevator.tenmo.services;
 import com.techelevator.tenmo.model.Transfer;
 import com.techelevator.tenmo.model.User;
 import com.techelevator.util.BasicLogger;
-import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestClientResponseException;
 import org.springframework.web.client.RestTemplate;
 
-import java.lang.reflect.Type;
 import java.math.BigDecimal;
-import java.sql.Array;
-import java.util.ArrayList;
 import java.util.List;
 
 public class TransferService {
 
     public static final String API_BASE_URL = "http://localhost:8080/";
     private RestTemplate restTemplate = new RestTemplate();
+
+    private List<Transfer> transfers;
 
     private String token = null;
 
@@ -46,6 +41,8 @@ public class TransferService {
                     HttpMethod.GET, makeAuthEntity(), Transfer[].class);
             transfers = response.getBody();
 
+
+
         }catch (RestClientResponseException | ResourceAccessException e) {
             BasicLogger.log(e.getMessage());
         }
@@ -55,7 +52,9 @@ public class TransferService {
     public Transfer viewTransferById(int transferId) {
         Transfer transfer = null;
         try {
-            ResponseEntity<Transfer> response = restTemplate.exchange(API_BASE_URL + "transfer/" + transferId, HttpMethod.GET, makeAuthEntity(), Transfer.class);
+            ResponseEntity<Transfer> response = restTemplate.exchange(API_BASE_URL + "transfer/" + transferId,
+                    HttpMethod.GET, makeAuthEntity(), Transfer.class);
+
             transfer = response.getBody();
         } catch (RestClientResponseException | ResourceAccessException e) {
             BasicLogger.log(e.getMessage());
