@@ -5,6 +5,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 @Component
@@ -84,6 +85,29 @@ public class JdbcTransferDao implements TransferDao{
         return transfers;
     }
 
+    public BigDecimal approveTransfer (Transfer transfer, int userId){
+        String sql="UPDATE transfer SET transfer_status_id = 2 "+
+                "WHERE transfer_id=?;";
+        jdbcTemplate.update(sql,transfer.getTransferId());
+        sql = "UPDATE account SET balance = balance - ? "+
+                "WHERE account_id = ?;";
+        jdbcTemplate.update(sql,transfer.getAmount(),transfer.getAccountFrom());
+        sql = "UPDATE account SET balance = balance + ? "+
+                "WHERE account_id = ?;";
+        jdbcTemplate.update(sql,transfer.getAmount(),transfer.getAccountTo());
+
+        sql = "SELECT balance FROM account "+
+                "WHERE user_id = ?;";
+
+        return jdbcTemplate.queryForObject(sql, BigDecimal.class, userId);
+    }
+
+    public void rejectTransfer(Transfer transfer){
+        String sql = "DELETE FROM transfer "+
+                "WHERE transfer_id = ?;";
+        jdbcTemplate.update(sql, transfer.getTransferId());
+    }
+
     private Transfer mapRowToTransfer(SqlRowSet row){
         Transfer transfer = new Transfer();
         transfer.setTransferId(row.getInt("transfer_id"));
@@ -94,4 +118,6 @@ public class JdbcTransferDao implements TransferDao{
         transfer.setAmount(row.getBigDecimal("amount"));
         return transfer;
     }
+
+
 }

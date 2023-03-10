@@ -18,4 +18,8 @@ public interface TransferDao {
     List<Transfer> viewTransfersByUser(int userId);
 
     List<Transfer> getPending(int userId);
+
+    BigDecimal approveTransfer(Transfer transfer, int userId);
+
+    void rejectTransfer(Transfer transfer);
 }

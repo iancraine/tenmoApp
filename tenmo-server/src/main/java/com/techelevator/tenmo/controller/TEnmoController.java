@@ -51,6 +51,16 @@ public class TEnmoController {
         return transferDao.viewTransfersByUser(id);
     }
 
+    @RequestMapping(path = "/approve/{id}", method = RequestMethod.PUT)
+    public BigDecimal approveTransfer(@Valid @RequestBody Transfer transfer, @PathVariable int id){
+        return transferDao.approveTransfer(transfer, id);
+    }
+
+    @RequestMapping(path = "/reject", method = RequestMethod.DELETE)
+    public void rejectTransfer(@Valid @RequestBody Transfer transfer){
+        transferDao.rejectTransfer(transfer);
+    }
+
     /**
      * I Changed the @PathVariable to an @RequestParam and sent the userID in an entity w/ the token
      * did not work
