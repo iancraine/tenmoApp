@@ -87,25 +87,37 @@ public class ConsoleService {
         scanner.nextLine();
     }
 
-    public void ListUsers(User[] users){
+    public void ListUsers(User[] users) {
         System.out.println("-------------------------------------------");
         System.out.println("Users");
         System.out.printf("%-4s    %-10s\n", "ID", "Name");
         System.out.println("-------------------------------------------");
-        for(User user : users){
+        for (User user : users) {
             System.out.printf("%-4s    %-10s\n", user.getId(), user.getUsername());
         }
         System.out.println("----------");
     }
 
-    public void sendRequestStuff(Transfer transfer, String requestOrSend){
-
-
+    public void sendRequestStuff(Transfer transfer, String requestOrSend) {
 
     }
 
-    public void printErrorMessage() {
-        System.out.println("An error occurred. Check the log for details.");
+    public void printPendingTransfers(Transfer[] pendingTransfers) {
+        System.out.println("-------------------------------------------");
+        System.out.println("Pending Transfer");
+        System.out.printf("%-4s    %-20s    %-10s\n", "ID", "To", "Amount");
+        System.out.println("-------------------------------------------");
+        for (Transfer transfer : pendingTransfers) {
+            if (transfer.getTransferType().equalsIgnoreCase("Request")) {
+                System.out.printf("%-4s    %-20s    %10s\n", transfer.getTransferId(), "From: " + transfer.getAccountFrom(), "$ " + transfer.getAmount());
+            } else {
+                System.out.printf("%-4s    %-20s    %10s\n", transfer.getTransferId(), "To: " + transfer.getAccountTo(), "$ " + transfer.getAmount());
+            }
+        }
     }
 
-}
+        public void printErrorMessage() {
+            System.out.println("An error occurred. Check the log for details.");
+        }
+
+    }

@@ -131,6 +131,9 @@ public class App {
 	}
 
 	private void viewPendingRequests() {
+        Transfer[] pendingTransfers = transferService.listPendingTransfers(currentUser.getUser().getId());
+        consoleService.printPendingTransfers(pendingTransfers);
+
 		// TODO Auto-generated method stub
 		
 	}

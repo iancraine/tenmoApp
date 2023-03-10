@@ -77,6 +77,17 @@ public class TransferService {
         return users;
     }
 
+    public Transfer[] listPendingTransfers(int userId){
+        Transfer[] pendingTransfers = null;
+        try{
+            ResponseEntity<Transfer[]> response = restTemplate.exchange(API_BASE_URL + "transfer/pending/" + userId, HttpMethod.GET, makeAuthEntity(), Transfer[].class);
+            pendingTransfers = response.getBody();
+        }catch (RestClientResponseException | ResourceAccessException e) {
+            BasicLogger.log(e.getMessage());
+        }
+        return pendingTransfers;
+    }
+
 
 
 
