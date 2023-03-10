@@ -37,8 +37,8 @@ public class TransferService {
     public Transfer[] viewAllTransfers(int userId){
         Transfer[] transfers = null;
         try{
-            ResponseEntity<Transfer[]> response = restTemplate.exchange(API_BASE_URL + "transfers/" + userId,
-                    HttpMethod.GET, makeAuthEntity(), Transfer[].class);
+            ResponseEntity<Transfer[]> response = restTemplate.exchange(API_BASE_URL + "transfer",
+                    HttpMethod.GET, makeUserIdEntity(userId), Transfer[].class);
             transfers = response.getBody();
 //            transfers = restTemplate.postForObject(API_BASE_URL + "transfers/" + userId, makeAuthEntity(), Transfer[].class);
 
@@ -53,7 +53,7 @@ public class TransferService {
     public Transfer viewTransferById(int transferId) {
         Transfer transfer = null;
         try {
-            ResponseEntity<Transfer> response = restTemplate.exchange(API_BASE_URL + "transfer/" + transferId,
+            ResponseEntity<Transfer> response = restTemplate.exchange(API_BASE_URL + "transfer",
                     HttpMethod.GET, makeAuthEntity(), Transfer.class);
 
             transfer = response.getBody();
@@ -99,6 +99,12 @@ public class TransferService {
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.setBearerAuth(token);
         return new HttpEntity<>(transfer, headers);
+    }
+
+    private HttpEntity<Integer> makeUserIdEntity(int userId){
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        return new HttpEntity<>(userId, headers);
     }
 
     private HttpEntity<Void> makeAuthEntity(){

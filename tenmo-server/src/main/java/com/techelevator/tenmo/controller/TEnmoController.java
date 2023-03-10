@@ -5,6 +5,7 @@ import com.techelevator.tenmo.dao.TransferDao;
 import com.techelevator.tenmo.dao.UserDao;
 import com.techelevator.tenmo.model.Transfer;
 import com.techelevator.tenmo.model.User;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,14 +16,12 @@ import java.util.List;
 @RestController
 @PreAuthorize("isAuthenticated()")
 public class TEnmoController {
+    @Autowired
     private TransferDao transferDao;
+    @Autowired
     private AccountDao accountDao;
+    @Autowired
     private UserDao userDao;
-    public TEnmoController(TransferDao transferDao, AccountDao accountDao, UserDao userDao){
-        this.transferDao = transferDao;
-        this.accountDao = accountDao;
-        this.userDao = userDao;
-    }
 
     @RequestMapping(path = "/send", method = RequestMethod.POST)
     public void sendMoney(@Valid @RequestBody Transfer transfer){
@@ -49,10 +48,17 @@ public class TEnmoController {
         return accountDao.getBalance(id);
     }
 
-    @RequestMapping(path = "/transfers/{id}", method = RequestMethod.GET)
-    public List<Transfer> viewAllTransfers(@Valid @PathVariable int id){
+    @RequestMapping(path = "/transfer", method = RequestMethod.GET)
+    public List<Transfer> viewAllTransfers(@Valid @RequestParam int id){
         return transferDao.viewTransfersByUser(id);
     }
+
+    /**
+     * I Changed the @PathVariable to an @RequestParam and sent the userID in an entity w/ the token
+     * did not work
+     * @return
+     */
+
 
     @RequestMapping(path = "/users", method = RequestMethod.GET)
     public List<User> getAllUsers(){
@@ -62,17 +68,8 @@ public class TEnmoController {
 
 
 
-    /**
-     * Get Account Balance
-     */
+ //TODO: create method that registers pending transaction has been accepted or refused and makes changes accordingly
 
-    /**
-     * Transfer Money
-     */
-
-
-    //TODO: Create Transfer DAO (handles if transfer is allowed rules)
-    //TODO: Create Account DAO (Holds account balance + userId)
 
 
 
