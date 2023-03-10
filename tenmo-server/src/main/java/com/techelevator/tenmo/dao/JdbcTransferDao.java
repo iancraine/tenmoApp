@@ -18,7 +18,7 @@ public class JdbcTransferDao implements TransferDao{
 
     @Override
     public void sendMoney(Transfer sendTransfer) {
-        String sql = "INSERT INTO transfer (transfer_type_id, transfer_status_id, account_from, account_to, amount) "+
+        String sql = "INSERT INTO transfer (transfer_type_id,transfer_status_id, account_from, account_to, amount) "+
                 "VALUES((SELECT transfer_type_id FROM transfer_type WHERE transfer_type_desc = 'Send'), " +
                 "(SELECT transfer_status_id FROM transfer_status WHERE transfer_status_desc = 'Pending')," +
                 "?, ?, ?);";

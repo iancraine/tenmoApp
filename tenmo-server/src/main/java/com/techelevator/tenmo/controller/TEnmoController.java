@@ -24,9 +24,7 @@ public class TEnmoController {
     private UserDao userDao;
 
     @RequestMapping(path = "/send", method = RequestMethod.POST)
-    public void sendMoney(@Valid @RequestBody Transfer transfer){
-        transferDao.sendMoney(transfer);
-    }
+    public void sendMoney(@Valid @RequestBody Transfer transfer){transferDao.sendMoney(transfer);}
 
     @RequestMapping(path = "/request", method = RequestMethod.POST)
     public void requestMoney(@Valid @RequestBody Transfer transfer){
@@ -48,8 +46,8 @@ public class TEnmoController {
         return accountDao.getBalance(id);
     }
 
-    @RequestMapping(path = "/transfer", method = RequestMethod.GET)
-    public List<Transfer> viewAllTransfers(@Valid @RequestParam int id){
+    @RequestMapping(path = "/transfers/{id}", method = RequestMethod.GET)
+    public List<Transfer> viewAllTransfers(@Valid @PathVariable int id){
         return transferDao.viewTransfersByUser(id);
     }
 

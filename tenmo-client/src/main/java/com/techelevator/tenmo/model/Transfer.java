@@ -5,19 +5,19 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.math.BigDecimal;
 
 public class Transfer {
-    @JsonProperty("transfer_id")
+    //@JsonProperty("transfer_id")
     private int transferId;
 
-    @JsonProperty("transfer_type_desc")
+   // @JsonProperty("transfer_type_desc")
     private String transferType;
 
-    @JsonProperty("transfer_status_desc")
+   // @JsonProperty("transfer_status_desc")
     private String status;
 
-    @JsonProperty("account_from")
+   // @JsonProperty("account_from")
     private int accountFrom;
 
-    @JsonProperty("account_to")
+   // @JsonProperty("account_to")
     private int accountTo;
 
     private BigDecimal amount;

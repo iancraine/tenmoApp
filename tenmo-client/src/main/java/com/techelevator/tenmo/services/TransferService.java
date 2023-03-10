@@ -34,16 +34,12 @@ public class TransferService {
         return balance;
     }
 
-    public Transfer[] viewAllTransfers(int userId){
+    public Transfer[] viewAllTransfers(int userid){
         Transfer[] transfers = null;
         try{
-            ResponseEntity<Transfer[]> response = restTemplate.exchange(API_BASE_URL + "transfer",
-                    HttpMethod.GET, makeUserIdEntity(userId), Transfer[].class);
+            ResponseEntity<Transfer[]> response = restTemplate.exchange(API_BASE_URL + "transfers/" + userid,
+                    HttpMethod.GET, makeAuthEntity(), Transfer[].class);
             transfers = response.getBody();
-//            transfers = restTemplate.postForObject(API_BASE_URL + "transfers/" + userId, makeAuthEntity(), Transfer[].class);
-
-
-
         }catch (RestClientResponseException | ResourceAccessException e) {
             BasicLogger.log(e.getMessage());
         }
@@ -53,9 +49,8 @@ public class TransferService {
     public Transfer viewTransferById(int transferId) {
         Transfer transfer = null;
         try {
-            ResponseEntity<Transfer> response = restTemplate.exchange(API_BASE_URL + "transfer",
+            ResponseEntity<Transfer> response = restTemplate.exchange(API_BASE_URL + "transfer/" + transferId,
                     HttpMethod.GET, makeAuthEntity(), Transfer.class);
-
             transfer = response.getBody();
         } catch (RestClientResponseException | ResourceAccessException e) {
             BasicLogger.log(e.getMessage());
@@ -65,7 +60,7 @@ public class TransferService {
 
     public void sendMoney(Transfer transfer){
         try{
-            restTemplate.exchange(API_BASE_URL + "send", HttpMethod.POST, makeTransferEntity(transfer), Transfer.class);
+            restTemplate.exchange(API_BASE_URL + "send", HttpMethod.POST,makeTransferEntity(transfer), Transfer.class);
         }catch (RestClientResponseException | ResourceAccessException e) {
             BasicLogger.log(e.getMessage());
         }
