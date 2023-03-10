@@ -108,7 +108,19 @@ public class App {
         Transfer[] pendingTransfers = transferService.listPendingTransfers(currentUser.getUser().getId());
         int transferIdForPending = consoleService.printPendingTransfers(pendingTransfers);
         if(transferIdForPending != 0){
-            consoleService.approvedOrRejectedMethod();
+            int aOrR = consoleService.approvedOrRejectedMethod();
+            if (aOrR == 1){
+                Transfer approvedTransfer = null;
+                for (int i = 0; i < pendingTransfers.length; i++){
+                    if (pendingTransfers[i].getTransferId() == transferIdForPending){
+                        approvedTransfer = pendingTransfers[i];
+
+                    }
+                }
+                System.out.println("New balance: $" + transferService.approveTransfer(approvedTransfer, currentUser.getUser().getId()));
+            }else if (aOrR == 2){
+                transferService.rejectTransfer(transferIdForPending);
+            }
             //pass both to method to be passed back to server.
         }
 

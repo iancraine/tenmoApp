@@ -19,11 +19,16 @@ public class JdbcTransferDao implements TransferDao{
 
     @Override
     public void sendMoney(Transfer sendTransfer) {
+        String accountFromSql = "SELECT account_id FROM account WHERE user_id = ?;";
+        int accountFrom = jdbcTemplate.queryForObject(accountFromSql, int.class,sendTransfer.getAccountFrom());
+        String accountFToSql = "SELECT account_id FROM account WHERE user_id = ?;";
+        int accountTo = jdbcTemplate.queryForObject(accountFromSql, int.class,sendTransfer.getAccountTo());
         String sql = "INSERT INTO transfer (transfer_type_id,transfer_status_id, account_from, account_to, amount) "+
                 "VALUES((SELECT transfer_type_id FROM transfer_type WHERE transfer_type_desc = 'Send'), " +
                 "(SELECT transfer_status_id FROM transfer_status WHERE transfer_status_desc = 'Pending')," +
                 "?, ?, ?);";
-        jdbcTemplate.update(sql, sendTransfer.getAccountFrom(), sendTransfer.getAccountTo(), sendTransfer.getAmount());
+
+        jdbcTemplate.update(sql, accountFrom, accountTo, sendTransfer.getAmount());
     }
 
     @Override
@@ -102,10 +107,10 @@ public class JdbcTransferDao implements TransferDao{
         return jdbcTemplate.queryForObject(sql, BigDecimal.class, userId);
     }
 
-    public void rejectTransfer(Transfer transfer){
+    public void rejectTransfer(int transferId){
         String sql = "DELETE FROM transfer "+
                 "WHERE transfer_id = ?;";
-        jdbcTemplate.update(sql, transfer.getTransferId());
+        jdbcTemplate.update(sql, transferId);
     }
 
     private Transfer mapRowToTransfer(SqlRowSet row){

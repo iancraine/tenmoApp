@@ -24,7 +24,9 @@ public class TEnmoController {
     private UserDao userDao;
 
     @RequestMapping(path = "/send", method = RequestMethod.POST)
-    public void sendMoney(@Valid @RequestBody Transfer transfer){transferDao.sendMoney(transfer);}
+    public void sendMoney(@Valid @RequestBody Transfer transfer){
+        transferDao.sendMoney(transfer);
+    }
 
     @RequestMapping(path = "/request", method = RequestMethod.POST)
     public void requestMoney(@Valid @RequestBody Transfer transfer){
@@ -56,9 +58,9 @@ public class TEnmoController {
         return transferDao.approveTransfer(transfer, id);
     }
 
-    @RequestMapping(path = "/reject", method = RequestMethod.DELETE)
-    public void rejectTransfer(@Valid @RequestBody Transfer transfer){
-        transferDao.rejectTransfer(transfer);
+    @RequestMapping(path = "/reject/{id}", method = RequestMethod.DELETE)
+    public void rejectTransfer(@Valid @PathVariable int id){
+        transferDao.rejectTransfer(id);
     }
 
     /**

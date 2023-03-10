@@ -88,6 +88,27 @@ public class TransferService {
         return pendingTransfers;
     }
 
+    public void rejectTransfer (int transferId){
+        try {
+            restTemplate.exchange(API_BASE_URL + "reject/" + transferId, HttpMethod.DELETE, makeAuthEntity(), Void.class);
+
+        }catch (RestClientResponseException | ResourceAccessException e) {
+            BasicLogger.log(e.getMessage());
+        }
+    }
+
+    public BigDecimal approveTransfer(Transfer approvedTransfer, int userId){
+        BigDecimal newBalance = null;
+        try {
+           ResponseEntity<BigDecimal> bigDecimalResponseEntity = restTemplate.exchange(API_BASE_URL + "approve/" + approvedTransfer.getTransferId(), HttpMethod.PUT, makeTransferEntity(approvedTransfer), BigDecimal.class);
+                newBalance = bigDecimalResponseEntity.getBody();
+        }catch (RestClientResponseException | ResourceAccessException e) {
+            BasicLogger.log(e.getMessage());
+        }
+        return newBalance;
+
+    }
+
 
 
 

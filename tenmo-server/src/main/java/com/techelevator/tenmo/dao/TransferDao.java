@@ -21,5 +21,5 @@ public interface TransferDao {
 
     BigDecimal approveTransfer(Transfer transfer, int userId);
 
-    void rejectTransfer(Transfer transfer);
+    void rejectTransfer(int transferId);
 }
