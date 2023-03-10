@@ -10,6 +10,7 @@ import java.sql.SQLOutput;
 import java.util.Scanner;
 
 public class ConsoleService {
+    private final TransferService transferService = new TransferService();
 
     private final Scanner scanner = new Scanner(System.in);
 
@@ -102,10 +103,10 @@ public class ConsoleService {
 
     }
 
-    public void printPendingTransfers(Transfer[] pendingTransfers) {
+    public int printPendingTransfers(Transfer[] pendingTransfers) {
         System.out.println("-------------------------------------------");
         System.out.println("Pending Transfer");
-        System.out.printf("%-4s    %-20s    %-10s\n", "ID", "To", "Amount");
+        System.out.printf("%-4s    %-20s    %-10s\n", "ID", "To/From", "Amount");
         System.out.println("-------------------------------------------");
         for (Transfer transfer : pendingTransfers) {
             if (transfer.getTransferType().equalsIgnoreCase("Request")) {
@@ -114,6 +115,48 @@ public class ConsoleService {
                 System.out.printf("%-4s    %-20s    %10s\n", transfer.getTransferId(), "To: " + transfer.getAccountTo(), "$ " + transfer.getAmount());
             }
         }
+        System.out.println("Enter transfer ID to approve/reject (0 to cancel): ");
+        int transferId = Integer.parseInt(scanner.nextLine());
+        return transferId;
+    }
+
+    public int approvedOrRejectedMethod(){
+        System.out.println("1: Approve");
+        System.out.println("2: Reject");
+        System.out.println("0: Don't approve or reject");
+        System.out.println("---------");
+        int approvedOrRejected = promptForInt("Please choose and option: ");
+        return approvedOrRejected;
+    }
+
+    public int printAllTransfers(Transfer[] transfers) {
+        System.out.println("-------------------------------------------");
+        System.out.println("Transfer");
+        System.out.printf("%-4s    %-20s    %-10s\n", "ID", "From/To", "Amount");
+        System.out.println("-------------------------------------------");
+        for (Transfer transfer : transfers) {
+            if (transfer.getTransferType().equalsIgnoreCase("Send")) {
+                System.out.printf("%-4s    %-20s    %10s\n", transfer.getTransferId(), "From: " + transfer.getAccountFrom(), "$ " + transfer.getAmount());
+            } else {
+                System.out.printf("%-4s    %-20s    %10s\n", transfer.getTransferId(), "To: " + transfer.getAccountTo(), "$ " + transfer.getAmount());
+
+            }
+        }
+        System.out.println("-------------------------------------------");
+        int transferId = Integer.parseInt(promptForString("Enter the transfer ID to view details (0 to cancel): "));
+        return transferId;
+    }
+
+    public void printTransferById(Transfer transfer) {
+            System.out.println("-------------------------------------------");
+            System.out.println("Transfer Details ");
+            System.out.println("-------------------------------------------");
+            System.out.println("Id: " + transfer.getTransferId());
+            System.out.println("From: " + transfer.getAccountFrom());
+            System.out.println("To: " + transfer.getAccountTo());
+            System.out.println("Type: " + transfer.getTransferType());
+            System.out.println("Status: " + transfer.getStatus());
+            System.out.println("Amount: " + transfer.getAmount());
     }
 
         public void printErrorMessage() {

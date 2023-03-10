@@ -100,39 +100,16 @@ public class App {
 
 	private void viewTransferHistory() {
         Transfer[] transfers = transferService.viewAllTransfers(currentUser.getUser().getId());
-        System.out.println("-------------------------------------------");
-        System.out.println("Transfer");
-        System.out.printf("%-4s    %-20s    %-10s\n","ID", "From/To", "Amount");
-        System.out.println("-------------------------------------------");
-//        if(transfers.length > 0){
-            for (Transfer transfer: transfers){
-                if(transfer.getTransferType().equalsIgnoreCase("Send")) {
-                    System.out.printf("%-4s    %-20s    %10s\n", transfer.getTransferId(), "From: " + transfer.getAccountFrom(), "$ " + transfer.getAmount());
-                }else {
-                    System.out.printf("%-4s    %-20s    %10s\n", transfer.getTransferId(), "To: " + transfer.getAccountTo(), "$ " + transfer.getAmount());
-
-                }
-            }
-//        }
-        System.out.println("-------------------------------------------");
-        int transferId = Integer.parseInt(consoleService.promptForString("Enter the transfer ID to view details (0 to cancel): "));
-        if(transferId != 0){
-            Transfer transfer = transferService.viewTransferById(transferId);
-            System.out.println("-------------------------------------------");
-            System.out.println("Transfer Details ");
-            System.out.println("-------------------------------------------");
-            System.out.println("Id: " + transfer.getTransferId());
-            System.out.println("From: " + transfer.getAccountFrom());
-            System.out.println("To: " + transfer.getAccountTo());
-            System.out.println("Type: " + transfer.getTransferType());
-            System.out.println("Status: " + transfer.getStatus());
-            System.out.println("Amount: " + transfer.getAmount());
-        }
+        Transfer transferDetails = transferService.viewTransferById(consoleService.printAllTransfers(transfers));
+        consoleService.printTransferById(transferDetails);
 	}
 
 	private void viewPendingRequests() {
         Transfer[] pendingTransfers = transferService.listPendingTransfers(currentUser.getUser().getId());
-        consoleService.printPendingTransfers(pendingTransfers);
+        int transferIdForPending = consoleService.printPendingTransfers(pendingTransfers);
+        if(consoleService.approvedOrRejectedMethod() != 0){
+            //pass both to method to be passed back to server.
+        }
 
 		// TODO Auto-generated method stub
 		
