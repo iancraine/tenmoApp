@@ -107,7 +107,8 @@ public class App {
 	private void viewPendingRequests() {
         Transfer[] pendingTransfers = transferService.listPendingTransfers(currentUser.getUser().getId());
         int transferIdForPending = consoleService.printPendingTransfers(pendingTransfers);
-        if(consoleService.approvedOrRejectedMethod() != 0){
+        if(transferIdForPending != 0){
+            consoleService.approvedOrRejectedMethod();
             //pass both to method to be passed back to server.
         }
 

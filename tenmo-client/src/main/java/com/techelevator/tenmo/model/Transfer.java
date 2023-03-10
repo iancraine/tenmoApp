@@ -21,6 +21,7 @@ public class Transfer {
     private int accountTo;
 
     private BigDecimal amount;
+
     //TODO: add account balance variable
 
 
@@ -31,6 +32,8 @@ public class Transfer {
         this.accountTo = accountTo;
         this.amount = amount;
     }
+
+
     public Transfer(){}
 
     public int getTransferId() {
@@ -80,4 +83,6 @@ public class Transfer {
     public void setAmount(BigDecimal amount) {
         this.amount = amount;
     }
+
+
 }
