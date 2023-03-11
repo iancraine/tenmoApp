@@ -88,12 +88,15 @@ public class ConsoleService {
         scanner.nextLine();
     }
 
-    public void ListUsers(User[] users) {
+    public void ListUsers(User[] users, int currentUserId) {
         System.out.println("-------------------------------------------");
         System.out.println("Users");
         System.out.printf("%-4s    %-10s\n", "ID", "Name");
         System.out.println("-------------------------------------------");
         for (User user : users) {
+            if(user.getId() == currentUserId){
+                continue;
+            }
             System.out.printf("%-4s    %-10s\n", user.getId(), user.getUsername());
         }
         System.out.println("----------");
@@ -139,7 +142,6 @@ public class ConsoleService {
                 System.out.printf("%-4s    %-20s    %10s\n", transfer.getTransferId(), "Sent From: " + transfer.getFromUser(), "$ " + transfer.getAmount());
             } else {
                 System.out.printf("%-4s    %-20s    %10s\n", transfer.getTransferId(), "Requested By: " + transfer.getToUser(), "$ " + transfer.getAmount());
-
             }
         }
         System.out.println("-------------------------------------------");

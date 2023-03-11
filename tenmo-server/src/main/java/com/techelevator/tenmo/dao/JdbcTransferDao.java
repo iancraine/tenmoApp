@@ -21,8 +21,8 @@ public class JdbcTransferDao implements TransferDao{
     public void sendMoney(Transfer sendTransfer) {
         String accountFromSql = "SELECT account_id FROM account WHERE user_id = ?;";
         int accountFrom = jdbcTemplate.queryForObject(accountFromSql, int.class,sendTransfer.getAccountFrom());
-        String accountFToSql = "SELECT account_id FROM account WHERE user_id = ?;";
-        int accountTo = jdbcTemplate.queryForObject(accountFromSql, int.class,sendTransfer.getAccountTo());
+        String accountToSql = "SELECT account_id FROM account WHERE user_id = ?;";
+        int accountTo = jdbcTemplate.queryForObject(accountToSql, int.class,sendTransfer.getAccountTo());
         String sql = "INSERT INTO transfer (transfer_type_id,transfer_status_id, account_from, account_to, amount) "+
                 "VALUES((SELECT transfer_type_id FROM transfer_type WHERE transfer_type_desc = 'Send'), " +
                 "(SELECT transfer_status_id FROM transfer_status WHERE transfer_status_desc = 'Pending')," +
@@ -33,11 +33,15 @@ public class JdbcTransferDao implements TransferDao{
 
     @Override
     public void requestMoney(Transfer requestTransfer) {
+        String accountFromSql = "SELECT account_id FROM account WHERE user_id = ?;";
+        int accountFrom = jdbcTemplate.queryForObject(accountFromSql, int.class,requestTransfer.getAccountFrom());
+        String accountToSql = "SELECT account_id FROM account WHERE user_id = ?;";
+        int accountTo = jdbcTemplate.queryForObject(accountToSql, int.class,requestTransfer.getAccountTo());
         String sql = "INSERT INTO transfer (transfer_type_id, transfer_status_id, account_from, account_to, amount) "+
                 "VALUES((SELECT transfer_type_id FROM transfer_type WHERE transfer_type_desc = 'Request'), " +
                 "(SELECT transfer_status_id FROM transfer_status WHERE transfer_status_desc = 'Pending')," +
                 "?, ?, ?);";
-        jdbcTemplate.update(sql, requestTransfer.getAccountFrom(), requestTransfer.getAccountTo(), requestTransfer.getAmount());
+        jdbcTemplate.update(sql, accountFrom, accountTo, requestTransfer.getAmount());
     }
 
     @Override
@@ -92,21 +96,27 @@ public class JdbcTransferDao implements TransferDao{
         return transfers;
     }
 
-    public BigDecimal approveTransfer (Transfer transfer, int userId){
-        String sql="UPDATE transfer SET transfer_status_id = 2 "+
-                "WHERE transfer_id=?;";
-        jdbcTemplate.update(sql,transfer.getTransferId());
-        sql = "UPDATE account SET balance = balance - ? "+
-                "WHERE account_id = ?;";
-        jdbcTemplate.update(sql,transfer.getAmount(),transfer.getAccountFrom());
-        sql = "UPDATE account SET balance = balance + ? "+
-                "WHERE account_id = ?;";
-        jdbcTemplate.update(sql,transfer.getAmount(),transfer.getAccountTo());
+    public boolean approveTransfer (Transfer transfer, int userId){
+        BigDecimal balance = null;
 
-        sql = "SELECT balance FROM account "+
-                "WHERE user_id = ?;";
+        String sql = "SELECT balance FROM account WHERE account_id = ?;";
+        balance = jdbcTemplate.queryForObject(sql, BigDecimal.class, transfer.getAccountFrom());
 
-        return jdbcTemplate.queryForObject(sql, BigDecimal.class, userId);
+            if((balance.subtract(new BigDecimal(String.valueOf(transfer.getAmount()))).compareTo(new BigDecimal(0)) == -1) && (transfer.getTransferType().equals("Request"))){
+                return false;
+            }
+
+            sql = "UPDATE account SET balance = balance - ? " +
+                    "WHERE account_id = ?;";
+            jdbcTemplate.update(sql, transfer.getAmount(), transfer.getAccountFrom());
+            sql = "UPDATE account SET balance = balance + ? " +
+                    "WHERE account_id = ?;";
+            jdbcTemplate.update(sql, transfer.getAmount(), transfer.getAccountTo());
+
+            sql = "UPDATE transfer SET transfer_status_id = 2 " +
+                    "WHERE transfer_id=?;";
+            jdbcTemplate.update(sql, transfer.getTransferId());
+        return true;
     }
 
     public void rejectTransfer(int transferId){

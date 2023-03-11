@@ -121,7 +121,7 @@ public class App {
                         approvedTransfer = pendingTransfers[i];
                     }
                 }
-                System.out.println("New balance: $" + transferService.approveTransfer(approvedTransfer, currentUser.getUser().getId()));
+                transferService.approveTransfer(approvedTransfer, currentUser.getUser().getId());
             }else if (aOrR == 2){
                 transferService.rejectTransfer(transferIdForPending);
             }
@@ -129,25 +129,36 @@ public class App {
 	}
 
 	private void sendBucks() {
-        consoleService.ListUsers(transferService.listUsers());
+        consoleService.ListUsers(transferService.listUsers(), currentUser.getUser().getId());
         int userId = consoleService.promptForInt("Enter ID of user you are send to (0 to cancel): ");
         BigDecimal sendingAmount = null;
         if(userId !=0){
             sendingAmount = consoleService.promptForBigDecimal("Enter amount: ");
+            if(sendingAmount.compareTo(new BigDecimal(0)) == -1 || sendingAmount.compareTo(new BigDecimal(0)) == 0){
+                System.out.println("Invalid Transfer Amount");
+            }else{
+                Transfer transfer = new Transfer("Send", "Pending", currentUser.getUser().getId(), userId, sendingAmount);
+                transferService.sendMoney(transfer, currentUser);
+                System.out.println("Transfer Sent!");
+            }
         }
-        Transfer transfer = new Transfer("Send", "Pending", currentUser.getUser().getId(), userId, sendingAmount);
-        transferService.sendMoney(transfer);
 	}
 
 	private void requestBucks() {
-        consoleService.ListUsers(transferService.listUsers());
+        consoleService.ListUsers(transferService.listUsers(), currentUser.getUser().getId());
         int userId = consoleService.promptForInt("Enter ID of user you are requesting from (0 to cancel): ");
         BigDecimal requestingAmount = null;
         if(userId !=0){
             requestingAmount = consoleService.promptForBigDecimal("Enter amount: ");
+            if(requestingAmount.compareTo(new BigDecimal(0)) == -1 || requestingAmount.compareTo(new BigDecimal(0)) == 0){
+                System.out.println("Invalid Transfer Amount");
+            }else {
+                Transfer transfer = new Transfer("Request", "Pending", userId, currentUser.getUser().getId(), requestingAmount);
+                transferService.requestMoney(transfer);
+                System.out.println("Request Sent!");
+            }
         }
-        Transfer transfer = new Transfer("Request", "Pending", userId, currentUser.getUser().getId(), requestingAmount);
-        transferService.requestMoney(transfer);
+
 	}
 
 }

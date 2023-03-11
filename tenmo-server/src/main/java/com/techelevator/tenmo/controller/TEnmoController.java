@@ -54,7 +54,7 @@ public class TEnmoController {
     }
 
     @RequestMapping(path = "/approve/{id}", method = RequestMethod.PUT)
-    public BigDecimal approveTransfer(@Valid @RequestBody Transfer transfer, @PathVariable int id){
+    public boolean approveTransfer(@Valid @RequestBody Transfer transfer, @PathVariable int id){
         return transferDao.approveTransfer(transfer, id);
     }
 

@@ -19,7 +19,7 @@ public interface TransferDao {
 
     List<Transfer> getPending(int userId);
 
-    BigDecimal approveTransfer(Transfer transfer, int userId);
+    boolean approveTransfer(Transfer transfer, int userId);
 
     void rejectTransfer(int transferId);
 }

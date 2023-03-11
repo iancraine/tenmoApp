@@ -1,5 +1,6 @@
 package com.techelevator.tenmo.services;
 
+import com.techelevator.tenmo.model.AuthenticatedUser;
 import com.techelevator.tenmo.model.Transfer;
 import com.techelevator.tenmo.model.User;
 import com.techelevator.util.BasicLogger;
@@ -58,11 +59,15 @@ public class TransferService {
         return transfer;
     }
 
-    public void sendMoney(Transfer transfer){
-        try{
-            restTemplate.exchange(API_BASE_URL + "send", HttpMethod.POST, makeTransferEntity(transfer), Transfer.class);
-        }catch (RestClientResponseException | ResourceAccessException e) {
-            BasicLogger.log(e.getMessage());
+    public void sendMoney(Transfer transfer, AuthenticatedUser user){
+        if((viewCurrentBalance(user.getUser().getId()).compareTo(transfer.getAmount()) == -1 )){
+            System.out.println("Invalid Transfer!");
+        } else {
+            try {
+                restTemplate.exchange(API_BASE_URL + "send", HttpMethod.POST, makeTransferEntity(transfer), Transfer.class);
+            } catch (RestClientResponseException | ResourceAccessException e) {
+                BasicLogger.log(e.getMessage());
+            }
         }
     }
 
@@ -105,16 +110,21 @@ public class TransferService {
         }
     }
 
-    public BigDecimal approveTransfer(Transfer approvedTransfer, int userId){
-        BigDecimal newBalance = null;
+    public void approveTransfer(Transfer approvedTransfer, int userId){
+        boolean isAllowed = false;
         try {
-           ResponseEntity<BigDecimal> response = restTemplate.exchange(API_BASE_URL + "approve/" +
-                   userId, HttpMethod.PUT, makeTransferEntity(approvedTransfer), BigDecimal.class);
-           newBalance = response.getBody();
+           ResponseEntity<Boolean> response = restTemplate.exchange(API_BASE_URL + "approve/" +
+                   userId, HttpMethod.PUT, makeTransferEntity(approvedTransfer), Boolean.class);
+           isAllowed = response.getBody();
         }catch (RestClientResponseException | ResourceAccessException e) {
             BasicLogger.log(e.getMessage());
         }
-        return newBalance;
+        if(isAllowed == false){
+            System.out.println("You do not have enough money to complete this transaction.");
+        } else {
+            BigDecimal balance = viewCurrentBalance(userId);
+            System.out.println("Transfer Approved.  Your new balance is: $" + balance);
+        }
 
     }
 
