@@ -110,9 +110,9 @@ public class ConsoleService {
         System.out.println("-------------------------------------------");
         for (Transfer transfer : pendingTransfers) {
             if (transfer.getTransferType().equalsIgnoreCase("Request")) {
-                System.out.printf("%-4s    %-20s    %10s\n", transfer.getTransferId(), "From: " + transfer.getAccountFrom(), "$ " + transfer.getAmount());
+                System.out.printf("%-4s    %-20s    %10s\n", transfer.getTransferId(), "Request From: " + transfer.getToUser(), "$ " + transfer.getAmount());
             } else {
-                System.out.printf("%-4s    %-20s    %10s\n", transfer.getTransferId(), "To: " + transfer.getAccountTo(), "$ " + transfer.getAmount());
+                System.out.printf("%-4s    %-20s    %10s\n", transfer.getTransferId(), "Sent By: " + transfer.getFromUser(), "$ " + transfer.getAmount());
             }
         }
         System.out.println("Enter transfer ID to approve/reject (0 to cancel): ");
@@ -135,10 +135,10 @@ public class ConsoleService {
         System.out.printf("%-4s    %-20s    %-10s\n", "ID", "From/To", "Amount");
         System.out.println("-------------------------------------------");
         for (Transfer transfer : transfers) {
-            if (transfer.getTransferType().equalsIgnoreCase("Send")) {
-                System.out.printf("%-4s    %-20s    %10s\n", transfer.getTransferId(), "From: " + transfer.getAccountFrom(), "$ " + transfer.getAmount());
+            if (transfer.getTransferType().equals("Send")) {
+                System.out.printf("%-4s    %-20s    %10s\n", transfer.getTransferId(), "Sent From: " + transfer.getFromUser(), "$ " + transfer.getAmount());
             } else {
-                System.out.printf("%-4s    %-20s    %10s\n", transfer.getTransferId(), "To: " + transfer.getAccountTo(), "$ " + transfer.getAmount());
+                System.out.printf("%-4s    %-20s    %10s\n", transfer.getTransferId(), "Requested By: " + transfer.getToUser(), "$ " + transfer.getAmount());
 
             }
         }
@@ -152,8 +152,8 @@ public class ConsoleService {
             System.out.println("Transfer Details ");
             System.out.println("-------------------------------------------");
             System.out.println("Id: " + transfer.getTransferId());
-            System.out.println("From: " + transfer.getAccountFrom());
-            System.out.println("To: " + transfer.getAccountTo());
+            System.out.println("From: " + transfer.getFromUser());
+            System.out.println("To: " + transfer.getToUser());
             System.out.println("Type: " + transfer.getTransferType());
             System.out.println("Status: " + transfer.getStatus());
             System.out.println("Amount: " + transfer.getAmount());

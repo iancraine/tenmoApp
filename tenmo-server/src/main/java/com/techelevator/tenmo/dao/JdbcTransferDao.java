@@ -1,6 +1,7 @@
 package com.techelevator.tenmo.dao;
 
 import com.techelevator.tenmo.model.Transfer;
+import com.techelevator.tenmo.model.User;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
@@ -10,7 +11,6 @@ import java.util.ArrayList;
 import java.util.List;
 @Component
 public class JdbcTransferDao implements TransferDao{
-
 
     JdbcTemplate jdbcTemplate = new JdbcTemplate();
     public JdbcTransferDao(JdbcTemplate jdbcTemplate){
@@ -64,7 +64,7 @@ public class JdbcTransferDao implements TransferDao{
                 "JOIN transfer_type type ON type.transfer_type_id = t.transfer_type_id " +
                 "JOIN transfer_status status ON status.transfer_status_id = t.transfer_status_id " +
                 "JOIN account a ON a.account_id = account_to OR a.account_id = account_from " +
-                "WHERE user_id = ?;";
+                "WHERE user_id = ? AND transfer_status_desc != 'Pending';";
         SqlRowSet row = jdbcTemplate.queryForRowSet(sql, userId);
         while (row.next()){
             Transfer transfer = mapRowToTransfer(row);
@@ -77,13 +77,15 @@ public class JdbcTransferDao implements TransferDao{
     @Override
     public List<Transfer> getPending(int userId) {
         List<Transfer> transfers = new ArrayList<>();
-        String sql = "SELECT transfer_id, transfer_type_desc, transfer_status_desc, account_from, account_to, amount " +
+        String sql = "SELECT DISTINCT transfer_id, transfer_type_desc, transfer_status_desc, account_from, account_to, amount " +
                 "FROM transfer t " +
                 "JOIN transfer_type type ON type.transfer_type_id = t.transfer_type_id " +
                 "JOIN transfer_status status ON status.transfer_status_id = t.transfer_status_id " +
                 "JOIN account a ON a.account_id = account_to OR a.account_id = account_from " +
-                "WHERE status.transfer_status_id = 1 AND user_id = ?;";
-        SqlRowSet row = jdbcTemplate.queryForRowSet(sql, userId);
+                "WHERE status.transfer_status_id = 1 " +
+                "AND ((account_to = (SELECT account_id FROM account WHERE user_id = ?) AND t.transfer_type_id = 2) " +
+                "OR (account_from = (SELECT account_id FROM account WHERE user_id = ?) AND t.transfer_type_id = 1));";
+        SqlRowSet row = jdbcTemplate.queryForRowSet(sql, userId, userId);
         while(row.next()){
             transfers.add(mapRowToTransfer(row));
         }
@@ -113,6 +115,16 @@ public class JdbcTransferDao implements TransferDao{
         jdbcTemplate.update(sql, transferId);
     }
 
+    public String getUserByAccountId(int accountId){
+        String sql = "SELECT username " +
+                "FROM tenmo_user tu " +
+                "JOIN account a ON a.user_id = tu.user_id " +
+                "WHERE account_id = ?;";
+        String username = jdbcTemplate.queryForObject(sql, String.class, accountId);
+        return username;
+    }
+
+
     private Transfer mapRowToTransfer(SqlRowSet row){
         Transfer transfer = new Transfer();
         transfer.setTransferId(row.getInt("transfer_id"));
@@ -121,6 +133,8 @@ public class JdbcTransferDao implements TransferDao{
         transfer.setAccountFrom(row.getInt("account_from"));
         transfer.setAccountTo(row.getInt("account_to"));
         transfer.setAmount(row.getBigDecimal("amount"));
+        transfer.setFromUser(getUserByAccountId(transfer.getAccountFrom()));
+        transfer.setToUser(getUserByAccountId(transfer.getAccountTo()));
         return transfer;
     }
 

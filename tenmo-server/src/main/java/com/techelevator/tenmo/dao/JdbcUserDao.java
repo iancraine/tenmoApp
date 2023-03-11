@@ -37,6 +37,7 @@ public class JdbcUserDao implements UserDao {
         return userId;
     }
 
+
     @Override
     public User getUserById(int userId) {
         String sql = "SELECT user_id, username, password_hash FROM tenmo_user WHERE user_id = ?";

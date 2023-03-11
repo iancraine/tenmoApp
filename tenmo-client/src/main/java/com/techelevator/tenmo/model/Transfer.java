@@ -21,6 +21,8 @@ public class Transfer {
     private int accountTo;
 
     private BigDecimal amount;
+    private String fromUser;
+    private String toUser;
 
     //TODO: add account balance variable
 
@@ -84,5 +86,19 @@ public class Transfer {
         this.amount = amount;
     }
 
+    public String getFromUser() {
+        return fromUser;
+    }
 
+    public void setFromUser(String fromUser) {
+        this.fromUser = fromUser;
+    }
+
+    public String getToUser() {
+        return toUser;
+    }
+
+    public void setToUser(String toUser) {
+        this.toUser = toUser;
+    }
 }

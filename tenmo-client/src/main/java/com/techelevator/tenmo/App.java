@@ -100,8 +100,13 @@ public class App {
 
 	private void viewTransferHistory() {
         Transfer[] transfers = transferService.viewAllTransfers(currentUser.getUser().getId());
-        Transfer transferDetails = transferService.viewTransferById(consoleService.printAllTransfers(transfers));
-        consoleService.printTransferById(transferDetails);
+        int transferId = consoleService.printAllTransfers(transfers);
+        Transfer transferDetails = null;
+        if (transferId != 0){
+           transferDetails = transferService.viewTransferById(transferId);
+           consoleService.printTransferById(transferDetails);
+        }
+
 	}
 
 	private void viewPendingRequests() {
@@ -114,18 +119,13 @@ public class App {
                 for (int i = 0; i < pendingTransfers.length; i++){
                     if (pendingTransfers[i].getTransferId() == transferIdForPending){
                         approvedTransfer = pendingTransfers[i];
-
                     }
                 }
                 System.out.println("New balance: $" + transferService.approveTransfer(approvedTransfer, currentUser.getUser().getId()));
             }else if (aOrR == 2){
                 transferService.rejectTransfer(transferIdForPending);
             }
-            //pass both to method to be passed back to server.
         }
-
-		// TODO Auto-generated method stub
-		
 	}
 
 	private void sendBucks() {
@@ -137,13 +137,17 @@ public class App {
         }
         Transfer transfer = new Transfer("Send", "Pending", currentUser.getUser().getId(), userId, sendingAmount);
         transferService.sendMoney(transfer);
-		// TODO Auto-generated method stub
-		
 	}
 
 	private void requestBucks() {
-		// TODO Auto-generated method stub
-		
+        consoleService.ListUsers(transferService.listUsers());
+        int userId = consoleService.promptForInt("Enter ID of user you are requesting from (0 to cancel): ");
+        BigDecimal requestingAmount = null;
+        if(userId !=0){
+            requestingAmount = consoleService.promptForBigDecimal("Enter amount: ");
+        }
+        Transfer transfer = new Transfer("Request", "Pending", userId, currentUser.getUser().getId(), requestingAmount);
+        transferService.requestMoney(transfer);
 	}
 
 }

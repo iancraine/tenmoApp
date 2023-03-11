@@ -60,7 +60,15 @@ public class TransferService {
 
     public void sendMoney(Transfer transfer){
         try{
-            restTemplate.exchange(API_BASE_URL + "send", HttpMethod.POST,makeTransferEntity(transfer), Transfer.class);
+            restTemplate.exchange(API_BASE_URL + "send", HttpMethod.POST, makeTransferEntity(transfer), Transfer.class);
+        }catch (RestClientResponseException | ResourceAccessException e) {
+            BasicLogger.log(e.getMessage());
+        }
+    }
+
+    public void requestMoney(Transfer transfer){
+        try{
+            restTemplate.exchange(API_BASE_URL + "request", HttpMethod.POST, makeTransferEntity(transfer), Transfer.class);
         }catch (RestClientResponseException | ResourceAccessException e) {
             BasicLogger.log(e.getMessage());
         }
@@ -100,8 +108,9 @@ public class TransferService {
     public BigDecimal approveTransfer(Transfer approvedTransfer, int userId){
         BigDecimal newBalance = null;
         try {
-           ResponseEntity<BigDecimal> bigDecimalResponseEntity = restTemplate.exchange(API_BASE_URL + "approve/" + approvedTransfer.getTransferId(), HttpMethod.PUT, makeTransferEntity(approvedTransfer), BigDecimal.class);
-                newBalance = bigDecimalResponseEntity.getBody();
+           ResponseEntity<BigDecimal> response = restTemplate.exchange(API_BASE_URL + "approve/" +
+                   userId, HttpMethod.PUT, makeTransferEntity(approvedTransfer), BigDecimal.class);
+           newBalance = response.getBody();
         }catch (RestClientResponseException | ResourceAccessException e) {
             BasicLogger.log(e.getMessage());
         }
@@ -109,29 +118,11 @@ public class TransferService {
 
     }
 
-
-
-
-    /**
-     * 2.) Send money to another user
-     * 3.) Request Money from another user
-     * 4.) View all of your transfers
-     * 5.) View detail of single transfer by ID
-     * 6.) View pending requests
-     */
-
-
     private HttpEntity<Transfer> makeTransferEntity(Transfer transfer){
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.setBearerAuth(token);
         return new HttpEntity<>(transfer, headers);
-    }
-
-    private HttpEntity<Integer> makeUserIdEntity(int userId){
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        return new HttpEntity<>(userId, headers);
     }
 
     private HttpEntity<Void> makeAuthEntity(){
